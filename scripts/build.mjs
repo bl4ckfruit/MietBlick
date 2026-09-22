@@ -32,11 +32,12 @@ const LOGO_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 112'>
   .replace(/>/g, '%3E')
   .replace(/#/g, '%23');
 
-function html({ css, js, inline }) {
+function html({ css, js, inline, version }) {
+  const suffix = version ? `?v=${version}` : '';
   const head = inline
     ? `<style>${css}</style>`
-    : `<link rel="stylesheet" href="assets/app.css" />`;
-  const body = inline ? `<script>${js}</script>` : `<script src="assets/app.js"></script>`;
+    : `<link rel="stylesheet" href="assets/app.css${suffix}" />`;
+  const body = inline ? `<script>${js}</script>` : `<script src="assets/app.js${suffix}"></script>`;
 
   return `<!doctype html>
 <html lang="de">
@@ -83,8 +84,9 @@ async function buildOnce() {
   const css = await readFile(join(DIST, 'assets/app.css'), 'utf8');
   const js = await readFile(join(DIST, 'assets/app.js'), 'utf8');
 
-  await writeFile(join(DIST, 'index.html'), html({ css, js, inline: false }));
-  await writeFile(join(ROOT, 'MietBlick.html'), html({ css, js, inline: true }));
+  const version = Date.now().toString(36);
+  await writeFile(join(DIST, 'index.html'), html({ css, js, inline: false, version }));
+  await writeFile(join(ROOT, 'MietBlick.html'), html({ css, js, inline: true, version }));
 
   // Kopie für GitHub Pages. .nojekyll verhindert, dass Jekyll die Dateien anfasst.
   await rm(DOCS, { recursive: true, force: true });
