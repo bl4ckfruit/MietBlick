@@ -217,6 +217,7 @@ function muenchen(): Property {
       highlight: 'Altbau mit Balkon, ruhiger Innenhof, 5 Minuten zum Viktualienmarkt',
       description:
         'Helle 3-Zimmer-Altbauwohnung im Herzen der Münchner Innenstadt. Parkett, hohe Decken, Balkon zum begrünten Innenhof. Nahversorgung und U-Bahn fußläufig.',
+      images: [],
       required: ['Kontakt', 'Anzahl Personen', 'Einzugstermin'],
       criteria: {
         petsAllowed: false,
@@ -299,6 +300,7 @@ function dachau(): Property {
       highlight: 'Sehr gute Lage, S-Bahn in 6 Minuten, Balkon nach Süden',
       description:
         'Gepflegte 2-Zimmer-Wohnung in sehr guter Lage in der Dachauer Altstadt. Süd-Balkon, Einbauküche, Kellerabteil. S-Bahn, Schulen und Einkaufsmöglichkeiten in wenigen Minuten erreichbar.',
+      images: [],
       required: ['Kontakt', 'Anzahl Personen', 'Einzugstermin'],
       criteria: {
         petsAllowed: true,
