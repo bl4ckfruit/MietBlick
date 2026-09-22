@@ -22,14 +22,26 @@ export function loadState(): AppState {
       return seedState();
     }
     const fresh = seedState();
+    const properties = Object.fromEntries(
+      Object.entries(parsed.properties).map(([id, property]) => [
+        id,
+        {
+          ...property,
+          listing: {
+            ...property.listing,
+            images: Array.isArray(property.listing.images) ? property.listing.images : [],
+          },
+        },
+      ]),
+    );
     return {
       ...fresh,
       ...parsed,
-      properties: { ...fresh.properties, ...parsed.properties },
+      properties: { ...fresh.properties, ...properties },
       connections: { ...fresh.connections, ...parsed.connections },
     };
   } catch {
-    // Privater Modus oder blockierter Speicher: Demo läuft trotzdem.
+    // Privater Modus oder blockierter Speicher: App bleibt trotzdem nutzbar.
     return seedState();
   }
 }
