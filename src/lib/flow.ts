@@ -35,7 +35,7 @@ export function buildSteps(property: Property, connected: boolean): FlowStep[] {
     {
       route: 'inserat',
       label: 'Inserat',
-      hint: 'anlegen und bearbeiten',
+      hint: 'bearbeiten',
       done: property.listing.publishedTo.length > 0,
     },
     {
