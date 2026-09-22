@@ -6,7 +6,7 @@
  * unstrukturiert, unterschiedlich lang, unterschiedlich vollständig.
  */
 
-import type { AppState, Applicant, Property, Viewing } from '../types';
+import type { AppState, Applicant, Property } from '../types';
 
 export const LANDLORD = {
   name: 'Franz Peters',
