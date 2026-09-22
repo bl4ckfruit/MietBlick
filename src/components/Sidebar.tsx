@@ -15,7 +15,6 @@ import { Modal } from './ui';
 
 export function Sidebar() {
   const { state, property, route, navigate, dispatch, notify } = useStore();
-  const [confirmReset, setConfirmReset] = useState(false);
   const [switching, setSwitching] = useState(false);
 
   if (!property) return null;
@@ -112,9 +111,6 @@ export function Sidebar() {
             <span className="user-role">{LANDLORD.role}</span>
           </span>
         </div>
-        <button type="button" className="sidebar-reset" onClick={() => setConfirmReset(true)}>
-          Demo zurücksetzen
-        </button>
       </div>
 
       {switching && (
@@ -175,42 +171,6 @@ export function Sidebar() {
         </Modal>
       )}
 
-      {confirmReset && (
-        <Modal
-          title="Demo zurücksetzen?"
-          sub="Der Ausgangszustand mit beiden Wohnungen und allen Startbewerbungen wird wiederhergestellt."
-          width={480}
-          onClose={() => setConfirmReset(false)}
-          footer={
-            <>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  dispatch({ type: 'reset' });
-                  setConfirmReset(false);
-                  navigate('start');
-                  notify('Demo zurückgesetzt.');
-                }}
-              >
-                Zurücksetzen
-              </button>
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={() => setConfirmReset(false)}
-              >
-                Abbrechen
-              </button>
-            </>
-          }
-        >
-          <p className="muted">
-            Neu hinzugefügte Anfragen, bearbeitete Rückfragen, Freigaben, Terminstatus,
-            Entscheidungen und erzeugte Mietverträge werden dabei verworfen.
-          </p>
-        </Modal>
-      )}
     </aside>
   );
 }
