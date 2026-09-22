@@ -1,5 +1,5 @@
 /**
- * Inserat anlegen und bearbeiten.
+ * Inserat bearbeiten.
  *
  * Alle Angaben stehen genau einmal – der Einzugstermin wird hier gepflegt und
  * überall daraus gelesen, damit er nicht an zwei Stellen abweichen kann.
@@ -14,6 +14,33 @@ import { Badge, Banner, Card, CardHead, PageHead } from '../components/ui';
 import { IconArrow } from '../components/icons';
 
 const PORTALS: PortalId[] = ['immoscout', 'kleinanzeigen', 'immowelt'];
+const MAX_IMAGES = 8;
+const MAX_IMAGE_EDGE = 1400;
+
+async function compressImage(file: File): Promise<string> {
+  const source = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+
+  const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('Bild konnte nicht gelesen werden.'));
+    img.src = source;
+  });
+
+  const scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(image.width, image.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(image.width * scale));
+  canvas.height = Math.max(1, Math.round(image.height * scale));
+  const context = canvas.getContext('2d');
+  if (!context) return source;
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', 0.78);
+}
 
 export function InseratPage() {
   const { dispatch, navigate, notify, state } = useStore();
@@ -53,6 +80,48 @@ export function InseratPage() {
     setDirty(true);
   };
 
+  const addImages = async (files: FileList | null) => {
+    if (!files?.length) return;
+    const remaining = Math.max(0, MAX_IMAGES - form.images.length);
+    if (remaining === 0) {
+      notify(`Es können maximal ${MAX_IMAGES} Bilder hinterlegt werden.`);
+      return;
+    }
+
+    const selected = Array.from(files)
+      .filter((file) => file.type.startsWith('image/'))
+      .slice(0, remaining);
+
+    try {
+      const images = await Promise.all(selected.map(compressImage));
+      setForm((current) => ({ ...current, images: [...current.images, ...images] }));
+      setDirty(true);
+      if (files.length > remaining) {
+        notify(`Maximal ${MAX_IMAGES} Bilder möglich – weitere Dateien wurden nicht übernommen.`);
+      }
+    } catch {
+      notify('Mindestens ein Bild konnte nicht verarbeitet werden.');
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setForm((current) => ({
+      ...current,
+      images: current.images.filter((_, imageIndex) => imageIndex !== index),
+    }));
+    setDirty(true);
+  };
+
+  const makeCover = (index: number) => {
+    setForm((current) => {
+      const images = [...current.images];
+      const [image] = images.splice(index, 1);
+      images.unshift(image);
+      return { ...current, images };
+    });
+    setDirty(true);
+  };
+
   const save = () => {
     dispatch({ type: 'updateListing', listing: form });
     setDirty(false);
@@ -72,7 +141,7 @@ export function InseratPage() {
     }
     dispatch({ type: 'publish', portals: connected });
     notify(
-      `Inserat auf ${connected.map((p) => PORTAL_LABEL[p]).join(', ')} veröffentlicht (Demo).`,
+      `Inserat auf ${connected.map((p) => PORTAL_LABEL[p]).join(', ')} veröffentlicht.`,
     );
   };
 
@@ -82,7 +151,7 @@ export function InseratPage() {
     <div className="page">
       <PageHead
         eyebrow="Inserat"
-        title="Inserat anlegen und bearbeiten"
+        title="Inserat bearbeiten"
         sub="Einmal zentral pflegen – MietBlick nutzt diese Angaben für die Prüfung der Bewerbungen und später für den Mietvertrag."
         actions={
           <>
@@ -230,6 +299,54 @@ export function InseratPage() {
                 onChange={(e) => set('description', e.target.value)}
               />
             </label>
+
+            <div className="field">
+              <span className="field-label">Bilder</span>
+              <label className="listing-upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  data-testid="listing-images"
+                  onChange={async (e) => {
+                    await addImages(e.target.files);
+                    e.target.value = '';
+                  }}
+                />
+                <span className="listing-upload-title">+ Bilder hinzufügen</span>
+                <span className="hint">Bis zu ${MAX_IMAGES} Bilder. Das erste Bild ist das Titelbild.</span>
+              </label>
+
+              {form.images.length > 0 && (
+                <div className="listing-images">
+                  {form.images.map((image, index) => (
+                    <div className="listing-image" key={`${index}-${image.slice(-18)}`}>
+                      <img src={image} alt={`Wohnungsbild ${index + 1}`} />
+                      <div className="listing-image-actions">
+                        {index === 0 ? (
+                          <span className="listing-cover">Titelbild</span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn btn-subtle btn-sm"
+                            onClick={() => makeCover(index)}
+                          >
+                            Als Titelbild
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="btn btn-ghost btn-sm"
+                          onClick={() => removeImage(index)}
+                        >
+                          Entfernen
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </Card>
 
