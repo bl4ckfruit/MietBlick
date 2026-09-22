@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { Logo } from '../brand/Logo';
 import { LANDLORD } from '../data/seed';
 import { countsFor, useStore } from '../state/store';
-import { buildSteps, flowProgress, type FlowStep } from '../lib/flow';
+import { buildSteps, flowProgress } from '../lib/flow';
 import { Modal } from './ui';
 
 export function Sidebar() {
