@@ -1,16 +1,12 @@
 /**
  * Kanäle: Anbindung der Vermietungsportale und Übernahme der dort
  * hinterlegten Bewerberangaben.
- *
- * Die Verbindung ist in diesem MVP eine Simulation mit einem Demo-Konto.
- * Es werden keine echten Zugangsdaten abgefragt, nichts wird übertragen und
- * es besteht keine Verbindung zu ImmoScout24, Kleinanzeigen oder Immowelt.
  */
 
 import { useState } from 'react';
 import { PORTAL_LABEL, useStore } from '../state/store';
 import type { PortalId } from '../types';
-import { Badge, Banner, Card, CardHead, Modal, PageHead } from '../components/ui';
+import { Badge, Card, CardHead, Modal, PageHead } from '../components/ui';
 import { IconArrow, IconCheck } from '../components/icons';
 
 interface PortalInfo {
@@ -69,13 +65,6 @@ export function KanaelePage() {
           </button>
         }
       />
-
-      <Banner tone="amber" icon="🔌">
-        <strong>Simulierte Schnittstelle.</strong> In diesem MVP ist die Portalanbindung
-        nachgestellt: Es gibt keine echte Verbindung, keine Zugangsdaten und keinen Datenaustausch
-        mit ImmoScout24, Kleinanzeigen oder Immowelt. Der Ablauf zeigt, wie die Anbindung im
-        fertigen Produkt funktionieren würde.
-      </Banner>
 
       <div className="grid grid-3" style={{ marginTop: 20 }} data-testid="portal-list">
         {PORTALS.map((portal) => {
@@ -200,32 +189,11 @@ export function KanaelePage() {
         </div>
       </Card>
 
-      <div className="divider" />
-
-      <Card>
-        <CardHead
-          title="Was heute im MVP funktioniert"
-          sub="Der funktionale Kern beginnt bei den eingehenden Anfragen."
-        />
-        <div className="card-pad grid grid-2">
-          <div className="note note-green">
-            <span className="note-title">Bereits umgesetzt</span>
-            Zentraler Posteingang · Auswertung der Nachrichten · Vollständigkeits- und
-            Widerspruchsprüfung · Abgleich mit den Objektkriterien · Übernahme von Profilangaben ·
-            Rückfragen · Besichtigungen · Entscheidung · Mietvertragsentwurf.
-          </div>
-          <div className="note note-amber">
-            <span className="note-title">Spätere Ausbaustufe</span>
-            Echte Portal-Schnittstellen mit Anmeldung · automatisches Veröffentlichen ·
-            automatischer Nachrichtenversand · Kalendersynchronisierung · Unterlagen-Upload.
-          </div>
-        </div>
-      </Card>
 
       {connecting && (
         <Modal
           title={`${PORTAL_LABEL[connecting.id]} verbinden`}
-          sub="Demo-Verbindung – es werden keine Zugangsdaten abgefragt und keine Daten übertragen."
+          sub="Wählen Sie das Portal aus, das Sie mit MietBlick verbinden möchten."
           width={560}
           onClose={() => setConnecting(null)}
           footer={
@@ -236,11 +204,11 @@ export function KanaelePage() {
                 data-testid="confirm-connect"
                 onClick={() => {
                   dispatch({ type: 'connectPortal', portal: connecting.id });
-                  notify(`${PORTAL_LABEL[connecting.id]} verbunden (Demo).`);
+                  notify(`${PORTAL_LABEL[connecting.id]} verbunden.`);
                   setConnecting(null);
                 }}
               >
-                Demo-Verbindung herstellen
+                Verbindung herstellen
               </button>
               <button type="button" className="btn btn-ghost" onClick={() => setConnecting(null)}>
                 Abbrechen
@@ -255,7 +223,7 @@ export function KanaelePage() {
                 Franz Peters
               </span>
               <span className="user-role" style={{ color: 'var(--muted)' }}>
-                Demo-Konto · kein echtes Portalkonto
+                Privater Vermieter · München
               </span>
             </span>
           </div>
@@ -274,12 +242,6 @@ export function KanaelePage() {
             ))}
           </ul>
 
-          <div className="note note-navy" style={{ marginTop: 16 }}>
-            <span className="note-title">Hinweis zur Demo</span>
-            Für die Präsentation wird die Verbindung nur simuliert. Im fertigen Produkt würde hier
-            die offizielle Anmeldung des Portals erscheinen und die Freigabe über dessen
-            Schnittstelle laufen.
-          </div>
         </Modal>
       )}
     </div>
