@@ -54,6 +54,8 @@ export interface Listing {
   moveIn: string;
   highlight: string;
   description: string;
+  /** Komprimierte Bilddaten des Inserats; erstes Bild ist das Titelbild. */
+  images: string[];
   required: RequiredField[];
   criteria: Criteria;
   publishedTo: PortalId[];
