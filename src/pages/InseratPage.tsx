@@ -314,7 +314,7 @@ export function InseratPage() {
                   }}
                 />
                 <span className="listing-upload-title">+ Bilder hinzufügen</span>
-                <span className="hint">Bis zu ${MAX_IMAGES} Bilder. Das erste Bild ist das Titelbild.</span>
+                <span className="hint">Bis zu {MAX_IMAGES} Bilder. Das erste Bild ist das Titelbild.</span>
               </label>
 
               {form.images.length > 0 && (
