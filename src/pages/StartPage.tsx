@@ -1,6 +1,6 @@
 /**
  * Startseite: Begrüßung, Kennzahlen über alle Objekte und die Auswahl,
- * mit welcher Wohnung Franz weiterarbeiten möchte.
+ * mit welcher Wohnung weitergearbeitet werden soll.
  */
 
 import { Logo } from '../brand/Logo';
@@ -27,8 +27,8 @@ function PropertyTile({
     <article className="pick" style={{ animationDelay: `${0.45 + index * 0.12}s` }}>
       <div className="pick-visual" data-property={property.id}>
         <span className="pick-index">Wohnung {index + 1}</span>
-        <span className="pick-city">{l.city}</span>
-        <span className="pick-district">{l.district}</span>
+        <span className="pick-city">{l.city || 'Neue Wohnung'}</span>
+        <span className="pick-district">{l.district || 'Inserat vervollständigen'}</span>
       </div>
 
       <div className="pick-body">
@@ -43,11 +43,11 @@ function PropertyTile({
             <strong>{l.rent.toLocaleString('de-DE')} €</strong> kalt
           </span>
           <span>
-            Einzug <strong>{l.moveIn}</strong>
+            Einzug <strong>{l.moveIn || 'offen'}</strong>
           </span>
         </div>
 
-        <p className="pick-highlight">{l.highlight}</p>
+        <p className="pick-highlight">{l.highlight || 'Objektdaten und Inserat bearbeiten.'}</p>
 
         <ul className="pick-criteria">
           {criteriaSummary(l.criteria).map((item) => (
@@ -159,6 +159,16 @@ export function StartPage() {
       <footer className="start-foot reveal" style={{ animationDelay: '0.7s' }}>
         <button type="button" className="btn btn-ghost" onClick={() => navigate('wohnungen')}>
           Alle Wohnungen im Überblick
+        </button>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => {
+            dispatch({ type: 'createProperty' });
+            navigate('inserat');
+          }}
+        >
+          + Neue Wohnung inserieren
         </button>
         <span className="hint">
           MietBlick unterstützt bei der Organisation. Die Entscheidung, wer die Wohnung bekommt,

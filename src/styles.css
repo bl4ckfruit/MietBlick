@@ -2606,6 +2606,77 @@ select.input:focus {
   display: block;
 }
 
+.listing-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px;
+  border: 1.5px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: #f8fafb;
+  cursor: pointer;
+  transition: border-color 0.14s ease, background 0.14s ease;
+}
+
+.listing-upload:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.listing-upload input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.listing-upload-title {
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.listing-images {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.listing-image {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.listing-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #eef2f5;
+}
+
+.listing-image-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 9px;
+}
+
+.listing-cover {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green-dark);
+  background: var(--green-soft);
+  border: 1px solid var(--green-line);
+  border-radius: 999px;
+  padding: 4px 9px;
+}
+
 /* --- Kanäle ----------------------------------------------- */
 
 .transfer {
@@ -2766,6 +2837,10 @@ textarea.contract-text:focus {
   }
 
   .field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .listing-images {
     grid-template-columns: 1fr;
   }
 

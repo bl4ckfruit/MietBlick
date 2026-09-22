@@ -39,6 +39,7 @@ import { defaultViewingDate, seedProperty, seedState } from '../data/seed';
 
 type Action =
   | { type: 'selectProperty'; id: string | null }
+  | { type: 'createProperty' }
   | { type: 'updateListing'; listing: Listing }
   | { type: 'publish'; portals: PortalId[] }
   | { type: 'connectPortal'; portal: PortalId }
@@ -167,10 +168,57 @@ function mapApplicants(
   return { ...property, applicants: property.applicants.map(update) };
 }
 
+function createEmptyProperty(): Property {
+  const id = `wohnung-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  return {
+    id,
+    listing: {
+      title: 'Neue Wohnung',
+      city: '',
+      district: '',
+      rooms: 1,
+      size: 1,
+      rent: 0,
+      extraCosts: 0,
+      deposit: 0,
+      moveIn: '',
+      highlight: '',
+      description: '',
+      images: [],
+      required: ['Kontakt', 'Anzahl Personen', 'Einzugstermin'],
+      criteria: {
+        petsAllowed: false,
+        smokingAllowed: false,
+        maxPersons: 1,
+        schufaRequired: true,
+      },
+      publishedTo: [],
+      updatedAt: null,
+    },
+    applicants: [],
+    viewings: [],
+    evaluatedOnce: false,
+    extendedChecked: false,
+    selectedApplicantId: null,
+    overrideReason: '',
+    contract: null,
+  };
+}
+
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'selectProperty':
       return { ...state, activePropertyId: action.id };
+
+    case 'createProperty': {
+      const property = createEmptyProperty();
+      return {
+        ...state,
+        activePropertyId: property.id,
+        propertyOrder: [...state.propertyOrder, property.id],
+        properties: { ...state.properties, [property.id]: property },
+      };
+    }
 
     case 'updateListing':
       return withActive(state, (property) => {

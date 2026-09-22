@@ -1,5 +1,5 @@
 /**
- * Übersicht über alle Wohnungen von Franz – mit Prozessstand je Objekt.
+ * Übersicht über alle Wohnungen – mit Prozessstand je Objekt.
  */
 
 import { countsFor, useStore } from '../state/store';
@@ -35,9 +35,22 @@ export function WohnungenPage() {
         title="Ihre Objekte im Überblick"
         sub="Jede Wohnung hat ein eigenes Inserat, eigene Kriterien und einen eigenen Prozessstand."
         actions={
-          <button type="button" className="btn btn-ghost" onClick={() => navigate('start')}>
-            Zur Startseite
-          </button>
+          <>
+            <button type="button" className="btn btn-ghost" onClick={() => navigate('start')}>
+              Zur Startseite
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              data-testid="create-property"
+              onClick={() => {
+                dispatch({ type: 'createProperty' });
+                navigate('inserat');
+              }}
+            >
+              + Neue Wohnung inserieren
+            </button>
+          </>
         }
       />
 
@@ -62,7 +75,7 @@ export function WohnungenPage() {
       <Card>
         <CardHead
           title="Vermietungsprozess im Vergleich"
-          sub="Beide Objekte nebeneinander – gleiche Stufen, gleicher Maßstab."
+          sub="Alle Objekte nebeneinander – gleiche Stufen, gleicher Maßstab."
         />
         <div className="card-pad grid grid-2" data-testid="funnel-compare">
           {/* Gemeinsame Obergrenze, damit die Balken wirklich vergleichbar sind. */}
@@ -111,7 +124,7 @@ export function WohnungenPage() {
             <Card key={item.id} className={isActive ? 'is-active-property' : ''}>
               <CardHead
                 title={item.listing.title}
-                sub={`${item.listing.city} · ${item.listing.district} · ${item.listing.size} m² · ${item.listing.rooms} Zimmer`}
+                sub={`${[item.listing.city, item.listing.district].filter(Boolean).join(' · ') || 'Noch keine Lage angegeben'} · ${item.listing.size} m² · ${item.listing.rooms} Zimmer`}
                 right={
                   isActive ? (
                     <Badge tone="green" dot>
@@ -133,7 +146,7 @@ export function WohnungenPage() {
                   </div>
                   <div className="fact">
                     <span className="fact-key">Einzug</span>
-                    <span className="fact-val">{item.listing.moveIn}</span>
+                    <span className="fact-val">{item.listing.moveIn || 'noch offen'}</span>
                   </div>
                   <div className="fact">
                     <span className="fact-key">Anfragen</span>
